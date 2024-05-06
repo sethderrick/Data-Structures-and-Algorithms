@@ -34,3 +34,22 @@ fn main() {
     let result = merge_sorted_arr(&a, &b);
     println!("{:?}", result);
 }
+
+/* 
+    Alternately....
+
+    fn merge_sorted_arr<T: Ord + Clone>(a: &[T], b: &[T]) -> Vec<T> {
+        let mut result = Vec::with_capacity(a.len() + b.len());
+        result.extend_from_slice(a);
+        result.extend_from_slice(b);
+        result.sort();
+        result
+    }
+
+    fn main() {
+        let a = vec![1, 2, 3, 4];
+        let b = vec![3, 7, 9, 12];
+        let merged_and_sorted = merge_sorted_arr(&a, &b);
+        println!("{:?}", merged_and_sorted);
+    }
+*/

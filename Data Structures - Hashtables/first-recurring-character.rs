@@ -45,3 +45,5 @@ fn main() {
     let x = find_first_duplicate_with_hashtable(&my_list);
     println!("{}", x);
 }
+
+// TODO: add tests

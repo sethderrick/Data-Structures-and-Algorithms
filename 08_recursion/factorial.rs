@@ -1,51 +1,71 @@
-/// Computes the factorial of a given number using recursion.
+/*
+    Write two functions that finds the factorial of any number. One should use recursive, the other should just use a for loop
+
+    function findFactorialRecursive(number) {
+        //code here
+        return answer;
+    }
+
+    function findFactorialIterative(number) {
+        //code here
+        return answer;
+    }
+*/
+
+// ANSWER:
+
+/// Calculates the factorial of a number using a recursive approach.
 ///
-/// Arguments:
-/// * `num`: The positive integer for which the factorial is computed.
+/// # Arguments
 ///
-/// Returns:
-/// The factorial of `num`.
+/// * `number` - The number whose factorial is to be calculated.
+///
+/// # Returns
+///
+/// The factorial of the given number.
 ///
 /// # Examples
+///
 /// ```
-/// let result = factorial(4);
-/// assert_eq!(result, 24);
+/// let result = find_factorial_recursive(5);
+/// assert_eq!(result, 120);
 /// ```
-fn factorial(num: u32) -> u32 {
-    if num == 1 {
-        1
+fn find_factorial_recursive(number: u64) -> u64 {
+    if number <= 1 {
+        1 // Base case for 0! and 1!
     } else {
-        num * factorial(num - 1)
+        number * find_factorial_recursive(number - 1)
     }
 }
 
-/// Computes the factorial of a given number using an iterative approach.
+/// Calculates the factorial of a number using an iterative approach.
 ///
-/// Arguments:
-/// * `num`: The positive integer for which the factorial is computed.
+/// # Arguments
 ///
-/// Returns:
-/// The factorial of `num`.
+/// * `number` - The number whose factorial is to be calculated.
+///
+/// # Returns
+///
+/// The factorial of the given number.
 ///
 /// # Examples
+///
 /// ```
-/// let result = fact(6);
-/// assert_eq!(result, 720);
+/// let result = find_factorial_iterative(5);
+/// assert_eq!(result, 120);
 /// ```
-fn fact(num: u32) -> u32 {
-    let mut result = 1;
-    for i in 1..=num {
-        result *= i;
+fn find_factorial_iterative(number: u64) -> u64 {
+    let mut answer = 1;
+    for i in 2..=number {
+        answer *= i;
     }
-    result
+    answer
 }
 
 fn main() {
-    let result = factorial(4);
-    println!("Factorial (Recursive) of 4 is: {}", result);
+    let recursive_result = find_factorial_recursive(5);
+    let iterative_result = find_factorial_iterative(5);
 
-    let result = fact(6);
-    println!("Factorial (Iterative) of 6 is: {}", result);
+    println!("Recursive factorial of 5: {}", recursive_result);
+    println!("Iterative factorial of 5: {}", iterative_result);
 }
-
-// TODO: add tests

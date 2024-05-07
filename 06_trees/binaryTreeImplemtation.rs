@@ -1,5 +1,4 @@
-/// A node in the binary search tree, containing a value and pointers to the left 
-/// and right child nodes.
+/// A node in the binary search tree, containing a value and pointers to the left and right child nodes.
 struct Node<T> {
     value: T,
     left: Option<Box<Node<T>>>,
@@ -18,7 +17,7 @@ impl<T: PartialOrd + Copy> BinarySearchTree<T> {
     }
 
     /// Inserts a new value into the binary search tree.
-    /// 
+    ///
     /// # Arguments
     ///
     /// * `value` - The value to be inserted into the tree.
@@ -53,8 +52,7 @@ impl<T: PartialOrd + Copy> BinarySearchTree<T> {
         }
     }
 
-    /// Looks up a value in the binary search tree and returns a reference to the node 
-    /// containing it if found.
+    /// Looks up a value in the binary search tree and returns a reference to the node containing it if found.
     ///
     /// # Arguments
     ///
@@ -116,7 +114,8 @@ impl<T: PartialOrd + Copy> BinarySearchTree<T> {
                     }
                 } else {
                     // Find the smallest value in the right subtree.
-                    let (smallest, smallest_parent) = Self::find_min(&mut found.right.as_mut().unwrap());
+                    let (smallest, smallest_parent) =
+                        Self::find_min(&mut found.right.as_mut().unwrap());
                     smallest.left = found.left.take();
                     smallest.right = found.right.take();
                     if let Some(parent_node) = smallest_parent {
@@ -143,4 +142,28 @@ impl<T: PartialOrd + Copy> BinarySearchTree<T> {
         let mut current = node;
         let mut parent = None;
 
-        while let Some(ref mut next) = current.left
+        while let Some(ref mut next) = current.left {
+            parent = Some(current);
+            current = next;
+        }
+        (current.left.take().unwrap(), parent)
+    }
+}
+
+fn main() {
+    let mut tree = BinarySearchTree::new();
+    tree.insert(9);
+    tree.insert(4);
+    tree.insert(6);
+    tree.insert(20);
+    tree.insert(170);
+    tree.insert(15);
+    tree.insert(1);
+    tree.remove(170);
+
+    if let Some(node) = tree.lookup(20) {
+        println!("Found node with value: {}", node.value);
+    } else {
+        println!("Node not found.");
+    }
+}

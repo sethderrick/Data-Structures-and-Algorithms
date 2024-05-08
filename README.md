@@ -3,20 +3,6 @@
 ## Overview -
 
 This is an un-optimized first swipe at translating the JavaScript examples from a recent courseware to Rust.
+Original examples are to be found at:https://github.com/aneagoie/ztm-master-the-coding-interview-ds-algo.git
 
-### Data Structures -
-
-1. Arrays
-2. Graphs
-3. Hashtables (dictionary)
-4. Linked Lists
-5. Stack and Queues
-
-### Algorithms -
-
-1. Dynamic Programming
-2. Recursion
-3. Sorting
-4. Traversals
-   - BFS
-   - DFS
+The directory 00_bigO is not yet translated to Rust but I'm working on it!

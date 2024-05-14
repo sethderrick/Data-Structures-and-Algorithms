@@ -5,6 +5,4 @@
 This is an un-optimized, first swipe at translating to Rust the JavaScript examples from a recent courseware at Zero To Mastery.
 Original examples are to be found at: https://github.com/aneagoie/ztm-master-the-coding-interview-ds-algo.git
 
-The directory 00_bigO is not yet translated but I'm working on it!
-
 Please feel free to submit pull requests or contact me directly via email for suggested improvements and fixes.

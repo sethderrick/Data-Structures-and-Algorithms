@@ -45,7 +45,10 @@
   and ease of use.
 */
 
+use std::clone::Clone;
+
 // A Node struct that stores a value and a link to the next node in the queue.
+#[derive(Clone)]
 struct Node<T> {
     value: T,
     next: Option<Box<Node<T>>>,
@@ -59,7 +62,7 @@ struct Queue<T> {
     length: usize,
 }
 
-impl<T> Queue<T> {
+impl<T: Clone> Queue<T> {
     /// Constructs a new, empty Queue.
     pub fn new() -> Self {
         Queue {
@@ -83,8 +86,8 @@ impl<T> Queue<T> {
     pub fn enqueue(&mut self, value: T) {
         let new_node = Box::new(Node { value, next: None });
 
-        if let Some(ref mut last) = self.last {
-            last.next = Some(new_node);
+        if let Some(ref mut last) = &mut self.last {
+            last.next = Some(new_node.clone());
         } else {
             self.first = Some(new_node.clone());
         }

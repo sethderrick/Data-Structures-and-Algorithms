@@ -1,4 +1,7 @@
+use std::clone::Clone;
+
 /// A Node struct that stores a value and a link to the next node in the stack.
+#[derive(Clone)]
 struct Node<T> {
     value: T,
     next: Option<Box<Node<T>>>,
@@ -11,7 +14,7 @@ struct Stack<T> {
     length: usize,
 }
 
-impl<T> Stack<T> {
+impl<T: Clone> Stack<T> {
     /// Constructs a new, empty Stack.
     pub fn new() -> Self {
         Stack {
@@ -40,7 +43,7 @@ impl<T> Stack<T> {
 
         self.top = Some(new_node);
 
-        if self.length == 0 {
+        if self.bottom.is_none() {
             self.bottom = self.top.clone();
         }
 

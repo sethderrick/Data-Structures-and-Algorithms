@@ -1,3 +1,4 @@
+#[derive(Debug)]
 struct MyArray {
     length: usize,
     data: Vec<String>,

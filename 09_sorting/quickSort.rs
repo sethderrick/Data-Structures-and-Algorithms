@@ -1,48 +1,46 @@
-/// Performs an in-place quicksort on a slice of `i32`.
+/// Sorts an array using the quicksort algorithm.
 ///
 /// # Arguments
 ///
-/// * `array` - A mutable slice of `i32` that will be sorted.
-/// * `left` - The starting index for the sorting process.
-/// * `right` - The ending index for the sorting process.
-fn quick_sort(array: &mut [i32], left: usize, right: usize) {
-    if left < right {
-        let partition_index = partition(array, left, right);
-        if partition_index > 0 {
-            quick_sort(array, left, partition_index - 1);
-        }
-        quick_sort(array, partition_index + 1, right);
+/// * `arr` - A mutable reference to the array to be sorted.
+/// * `low` - The starting index of the portion of the array to be sorted.
+/// * `high` - The ending index of the portion of the array to be sorted.
+fn quick_sort(arr: &mut [i32], low: isize, high: isize) {
+    if low < high {
+        let pi = partition(arr, low, high);
+        quick_sort(arr, low, pi - 1);
+        quick_sort(arr, pi + 1, high);
     }
 }
 
-/// Partitions the array around a pivot element and returns the index of the pivot after partition.
+/// Partitions the array around the pivot element.
 ///
 /// # Arguments
 ///
-/// * `array` - A mutable slice of `i32`.
-/// * `left` - The starting index for the partition.
-/// * `right` - The ending index for the partition.
+/// * `arr` - A mutable reference to the array to be partitioned.
+/// * `low` - The starting index of the portion of the array to be partitioned.
+/// * `high` - The ending index of the portion of the array to be partitioned.
 ///
 /// # Returns
 ///
-/// The partition index where the pivot element resides after partitioning.
-fn partition(array: &mut [i32], left: usize, right: usize) -> usize {
-    let pivot = array[right];
-    let mut i = left;
+/// The index of the pivot element after partitioning.
+fn partition(arr: &mut [i32], low: isize, high: isize) -> isize {
+    let pivot = arr[high as usize];
+    let mut i = low - 1;
 
-    for j in left..right {
-        if array[j] < pivot {
-            array.swap(i, j);
+    for j in low..high {
+        if arr[j as usize] < pivot {
             i += 1;
+            arr.swap(i as usize, j as usize);
         }
     }
-
-    array.swap(i, right);
-    i
+    arr.swap((i + 1) as usize, high as usize);
+    i + 1
 }
 
 fn main() {
-    let mut numbers = [99, 44, 6, 2, 1, 5, 63, 87, 283, 4, 0];
-    quick_sort(&mut numbers, 0, numbers.len() - 1);
-    println!("Sorted numbers: {:?}", numbers);
+    let mut numbers = vec![34, 7, 23, 32, 5, 62];
+    let len = numbers.len(); // Separate the calculation of the length
+    quick_sort(&mut numbers, 0, len as isize - 1);
+    println!("Sorted array: {:?}", numbers);
 }

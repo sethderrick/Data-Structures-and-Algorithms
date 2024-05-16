@@ -1,32 +1,38 @@
 use std::collections::HashMap;
+use std::sync::{Mutex, Once};
 
 // Simple function to add 80 to a number
 fn add_to_80(n: i32) -> i32 {
     n + 80
 }
 
-// This version uses a global mutable cache which is not idiomatic Rust and can lead to safety issues
-// in a concurrent context.
-// Therefore, we use `unsafe` and a static mutable HashMap for demonstration purposes only and to align
-// with the original JavaScript version in the aneagoie repo
-static mut CACHE: HashMap<i32, i32> = HashMap::new();
+// Use `Once` and `Mutex` for safe static initialization
+static mut CACHE: Option<Mutex<HashMap<i32, i32>>> = None;
+static INIT: Once = Once::new();
+
+fn get_cache() -> &'static Mutex<HashMap<i32, i32>> {
+    unsafe {
+        INIT.call_once(|| {
+            CACHE = Some(Mutex::new(HashMap::new()));
+        });
+        CACHE.as_ref().unwrap()
+    }
+}
 
 fn memoize_add_to_80_v1(n: i32) -> i32 {
-    unsafe {
-        if let Some(&value) = CACHE.get(&n) {
-            value
-        } else {
-            println!("long time");
-            let answer = n + 80;
-            CACHE.insert(n, answer);
-            answer
-        }
+    let cache = get_cache();
+    let mut cache_lock = cache.lock().unwrap();
+    if let Some(&value) = cache_lock.get(&n) {
+        value
+    } else {
+        println!("long time");
+        let answer = n + 80;
+        cache_lock.insert(n, answer);
+        answer
     }
 }
 
 // Second version using a closure to encapsulate the cache, avoiding global state
-// This is more idiomatic in Rust and safer, avoiding global state. This function
-// is encapsulated and manages its cache internally, similar to the original JavaScript closure.
 fn memoize_add_to_80_v2() -> Box<dyn FnMut(i32) -> i32> {
     let mut cache = HashMap::new();
     Box::new(move |n| {

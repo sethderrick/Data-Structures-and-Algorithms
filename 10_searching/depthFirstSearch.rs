@@ -34,33 +34,22 @@ impl BinarySearchTree {
 
     /// Inserts a value into the binary search tree.
     fn insert(&mut self, value: i32) {
-        let new_node = Node::new(value);
-        match self.root {
-            Some(ref mut root) => {
-                let mut current = root.clone();
-                loop {
-                    let mut current_borrowed = current.borrow_mut();
-                    if value < current_borrowed.value {
-                        if let Some(ref left) = current_borrowed.left {
-                            current = left.clone();
-                        } else {
-                            current_borrowed.left = Some(new_node.clone());
-                            break;
-                        }
+        fn insert_helper(node: &TreeLink, value: i32) -> TreeLink {
+            match node {
+                None => Some(Node::new(value)),
+                Some(ref n) => {
+                    let mut n_borrowed = n.borrow_mut();
+                    if value < n_borrowed.value {
+                        n_borrowed.left = insert_helper(&n_borrowed.left, value);
                     } else {
-                        if let Some(ref right) = current_borrowed.right {
-                            current = right.clone();
-                        } else {
-                            current_borrowed.right = Some(new_node.clone());
-                            break;
-                        }
+                        n_borrowed.right = insert_helper(&n_borrowed.right, value);
                     }
+                    node.clone()
                 }
             }
-            None => {
-                self.root = Some(new_node);
-            }
         }
+
+        self.root = insert_helper(&self.root, value);
     }
 
     /// Recursively traverses the tree in in-order.

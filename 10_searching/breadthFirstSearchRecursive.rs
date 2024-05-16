@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use std::collections::VecDeque;
 
 /// Represents a single node within a binary search tree.
@@ -71,50 +72,48 @@ impl BinarySearchTree {
         None
     }
 
-    /// Removes a value from the tree.
+    /// Removes a value from the binary search tree.
+    ///
+    /// # Arguments
+    /// * `value` - The value to remove from the tree.
+    ///
+    /// # Returns
+    /// * `bool` - `true` if the value was found and removed, `false` otherwise.
     fn remove(&mut self, value: i32) -> bool {
-        let mut current = &mut self.root;
-        let mut parent = None;
-
-        while let Some(ref mut node) = current {
-            if value < node.value {
-                parent = Some(current);
-                current = &mut node.left;
-            } else if value > node.value {
-                parent = Some(current);
-                current = &mut node.right;
-            } else {
-                if node.right.is_none() {
-                    *current = node.left.take();
-                } else if let Some(ref mut right) = node.right {
-                    if right.left.is_none() {
-                        right.left = node.left.take();
-                        *current = Some(right.take());
-                    } else {
-                        let (leftmost, leftmost_parent) = Self::detach_leftmost(right);
-                        leftmost.left = node.left.take();
-                        leftmost.right = node.right.take();
-                        *current = Some(leftmost);
-                        if let Some(leftmost_parent) = leftmost_parent {
-                            leftmost_parent.left = leftmost.right.take();
-                        }
-                    }
-                }
-                return true;
-            }
-        }
-        false
+        let root = self.root.take();
+        let result = self._remove(root, value);
+        self.root = result;
+        self.root.is_some()
     }
 
-    /// Helper method to detach the leftmost node from the given subtree.
-    fn detach_leftmost(node: &mut Box<Node>) -> (Box<Node>, Option<&mut Box<Node>>) {
-        let mut parent = None;
-        let mut current = node;
-        while let Some(ref mut left) = current.left {
-            parent = Some(current);
-            current = left;
-        }
-        (current.left.take().unwrap(), parent)
+    fn _remove(&self, node: Option<Box<Node>>, value: i32) -> Option<Box<Node>> {
+        node.map(|mut node| {
+            match value.cmp(&node.value) {
+                Ordering::Less => node.left = self._remove(node.left, value),
+                Ordering::Greater => node.right = self._remove(node.right, value),
+                Ordering::Equal => match (node.left.take(), node.right.take()) {
+                    (Some(left), None) => return Some(left),
+                    (None, Some(right)) => return Some(right),
+                    (None, None) => return None,
+                    (Some(left), Some(mut right)) => {
+                        if right.left.is_none() {
+                            right.left = Some(left);
+                            return Some(right);
+                        } else {
+                            let mut leftmost = right.left.as_mut().unwrap();
+                            while let Some(ref mut next_left) = leftmost.left {
+                                leftmost = next_left;
+                            }
+                            std::mem::swap(&mut leftmost.left, &mut node.left);
+                            leftmost.right = node.right.take();
+                            return Some(right);
+                        }
+                    }
+                },
+            }
+            Some(node)
+        })
+        .flatten()
     }
 
     /// Performs an iterative breadth-first search on the tree and returns a vector of values.
